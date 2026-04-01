@@ -109,6 +109,19 @@
         const hrefFile = href.split('/').pop();
         if (hrefFile === current) a.classList.add('active');
       });
+
+      const active = document.querySelector('.nav a.active');
+      if (active) {
+        const list = active.closest('.nav-list');
+        if (list) {
+          const section = list.previousElementSibling;
+          if (section && section.classList.contains('nav-section')) {
+            section.classList.remove('collapsed');
+            list.classList.remove('collapsed');
+            list.style.maxHeight = list.scrollHeight + 'px';
+          }
+        }
+      }
     }
 
     document.addEventListener('DOMContentLoaded', setupNav);
