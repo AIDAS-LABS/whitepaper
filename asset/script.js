@@ -62,9 +62,11 @@ function setupSidebarToggles() {
     const next = section.nextElementSibling;
     if (!next || !next.classList.contains('nav-list')) return;
     const caret = section.querySelector('.nav-section-caret');
+    const link = section.querySelector('.nav-section-link');
     if (caret) {
       caret.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         const willCollapse = !section.classList.contains('collapsed');
         section.classList.toggle('collapsed');
         next.classList.toggle('collapsed');
@@ -75,6 +77,14 @@ function setupSidebarToggles() {
         }
       });
     }
+    // Click on the section (not caret) navigates to the section link
+    section.addEventListener('click', (e) => {
+      if (e.target && (e.target === caret || (caret && caret.contains(e.target)))) return;
+      if (link) {
+        const href = link.getAttribute('href');
+        if (href) window.location.href = href;
+      }
+    });
     // initialize height for animation
     if (!next.classList.contains('collapsed')) {
       next.style.maxHeight = next.scrollHeight + 'px';
