@@ -159,6 +159,17 @@ function resolveNavLinks() {
   });
 }
 
+function normalizeNavLinks(navRoot, base) {
+  if (!navRoot) return;
+  navRoot.querySelectorAll('a[href]').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (!href) return;
+    if (href.startsWith('http') || href.startsWith('#') || href.startsWith('mailto:')) return;
+    if (href.startsWith('/')) return;
+    a.setAttribute('href', base + href);
+  });
+}
+
 async function loadNav() {
   const slot = document.querySelector('.nav-container');
   const sidebar = document.querySelector('.site-sidebar');
@@ -173,7 +184,7 @@ async function loadNav() {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const nav = doc.querySelector('nav.nav');
     slot.innerHTML = nav ? nav.outerHTML : html;
-    resolveNavLinks();
+    normalizeNavLinks(slot, base);
     highlightNav();
     setupSidebarToggles();
     if (sidebar) sidebar.classList.remove('nav-fallback');
