@@ -93,18 +93,7 @@ function setupSidebarToggles() {
     }
   });
 
-  const active = document.querySelector('.nav a.active');
-  if (active) {
-    const list = active.closest('.nav-list');
-    if (list) {
-      const section = list.previousElementSibling;
-      if (section && section.classList.contains('nav-section')) {
-        section.classList.remove('collapsed');
-        list.classList.remove('collapsed');
-        list.style.maxHeight = list.scrollHeight + 'px';
-      }
-    }
-  }
+  // Keep all sections collapsed by default on first load.
 }
 
 function transformLinkListsToCards() {
