@@ -101,17 +101,30 @@ function transformLinkListsToCards() {
     const card = document.createElement('a');
     card.className = 'card';
     card.href = a.getAttribute('href') || '#';
+    const text = document.createElement('div');
+    text.className = 'card-text';
     const title = document.createElement('div');
     title.className = 'card-title';
     title.textContent = a.textContent || '';
-    card.appendChild(title);
-    const sub = document.createElement('div');
-    sub.className = 'card-sub';
-    sub.textContent = 'Open section';
-    card.appendChild(sub);
+    text.appendChild(title);
+    card.appendChild(text);
+    const arrow = document.createElement('div');
+    arrow.className = 'card-arrow';
+    arrow.textContent = '›';
+    card.appendChild(arrow);
     wrapper.appendChild(card);
   });
   next.replaceWith(wrapper);
+}
+
+function addSidebarFooter() {
+  const sidebar = document.querySelector('.site-sidebar');
+  if (!sidebar) return;
+  if (sidebar.querySelector('.sidebar-footer')) return;
+  const footer = document.createElement('div');
+  footer.className = 'sidebar-footer';
+  footer.innerHTML = '<div class=\"powered\">Powered by GitBook</div>';
+  sidebar.appendChild(footer);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -119,4 +132,5 @@ document.addEventListener('DOMContentLoaded', () => {
   highlightNav();
   setupSidebarToggles();
   transformLinkListsToCards();
+  addSidebarFooter();
 });
