@@ -61,13 +61,28 @@ function setupSidebarToggles() {
   sections.forEach((section) => {
     const next = section.nextElementSibling;
     if (!next || !next.classList.contains('nav-list')) return;
-    section.addEventListener('click', () => {
-      section.classList.toggle('collapsed');
-      next.classList.toggle('collapsed');
-    });
+    const caret = section.querySelector('.nav-section-caret');
+    if (caret) {
+      caret.addEventListener('click', (e) => {
+        e.preventDefault();
+        const willCollapse = !section.classList.contains('collapsed');
+        section.classList.toggle('collapsed');
+        next.classList.toggle('collapsed');
+        if (willCollapse) {
+          next.style.maxHeight = '0px';
+        } else {
+          next.style.maxHeight = next.scrollHeight + 'px';
+        }
+      });
+    }
+    // initialize height for animation
+    if (!next.classList.contains('collapsed')) {
+      next.style.maxHeight = next.scrollHeight + 'px';
+    } else {
+      next.style.maxHeight = '0px';
+    }
   });
 
-  // Expand section that contains active link
   const active = document.querySelector('.nav a.active');
   if (active) {
     const list = active.closest('.nav-list');
@@ -76,6 +91,7 @@ function setupSidebarToggles() {
       if (section && section.classList.contains('nav-section')) {
         section.classList.remove('collapsed');
         list.classList.remove('collapsed');
+        list.style.maxHeight = list.scrollHeight + 'px';
       }
     }
   }
@@ -127,10 +143,37 @@ function addSidebarFooter() {
   sidebar.appendChild(footer);
 }
 
+function resolveNavLinks() {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+  const path = window.location.pathname;
+  const base = path.includes('/whitepaper/') ? path.split('/whitepaper/')[0] + '/whitepaper/' : './';
+  nav.querySelectorAll('[data-href]').forEach((el) => {
+    const target = el.getAttribute('data-href');
+    if (!target) return;
+    el.setAttribute('href', base + target);
+  });
+}
+
+async function loadNav() {
+  const slot = document.querySelector('.nav-container');
+  if (!slot) return;
+  const path = window.location.pathname;
+  const base = path.includes('/whitepaper/') ? path.split('/whitepaper/')[0] + '/whitepaper/' : './';
+  try {
+    const res = await fetch(base + 'navi.html', { cache: 'no-store' });
+    if (!res.ok) return;
+    const html = await res.text();
+    slot.innerHTML = html;
+    resolveNavLinks();
+    highlightNav();
+    setupSidebarToggles();
+  } catch (_) {}
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   buildToc();
-  highlightNav();
-  setupSidebarToggles();
+  loadNav();
   transformLinkListsToCards();
   addSidebarFooter();
 });

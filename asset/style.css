@@ -147,14 +147,26 @@ hr { border: none; border-top: 1px solid var(--line); margin: 24px 0; }
   justify-content: space-between;
   font-weight: 600;
 }
-.nav-section::after {
-  content: "▾";
+.nav-section-link { color: var(--accent-2); }
+.nav-section-link:hover { text-decoration: none; color: var(--accent); }
+.nav-section-caret {
   font-size: 0.7rem;
   color: #9ca3af;
+  padding: 2px 6px;
+  border-radius: 6px;
 }
-.nav-section.collapsed::after { content: "▸"; }
-.nav-list { list-style: none; padding: 0 0 0 10px; margin: 0 0 6px 6px; border-left: 1px solid #eef0f4; }
-.nav-list.collapsed { display: none; }
+.nav-section-caret:hover { background: #f3f4f6; }
+.nav-section.collapsed .nav-section-caret { transform: rotate(-90deg); }
+.nav-list {
+  list-style: none;
+  padding: 0 0 0 10px;
+  margin: 0 0 6px 6px;
+  border-left: 1px solid #eef0f4;
+  overflow: hidden;
+  transition: max-height 180ms ease, opacity 180ms ease;
+  opacity: 1;
+}
+.nav-list.collapsed { max-height: 0; opacity: 0; }
 .nav-list li { margin: 6px 0; }
 .nav-list a {
   color: #4b5563;
