@@ -144,13 +144,7 @@ function transformLinkListsToCards() {
 }
 
 function addSidebarFooter() {
-  const sidebar = document.querySelector('.site-sidebar');
-  if (!sidebar) return;
-  if (sidebar.querySelector('.sidebar-footer')) return;
-  const footer = document.createElement('div');
-  footer.className = 'sidebar-footer';
-  footer.innerHTML = '<div class=\"powered\">Powered by GitBook</div>';
-  sidebar.appendChild(footer);
+  return;
 }
 
 function resolveNavLinks() {
@@ -167,23 +161,34 @@ function resolveNavLinks() {
 
 async function loadNav() {
   const slot = document.querySelector('.nav-container');
+  const sidebar = document.querySelector('.site-sidebar');
+  const frame = document.querySelector('.nav-frame');
   if (!slot) return;
   const path = window.location.pathname;
   const base = path.includes('/whitepaper/') ? path.split('/whitepaper/')[0] + '/whitepaper/' : './';
   try {
     const res = await fetch(base + 'navi.html', { cache: 'no-store' });
-    if (!res.ok) return;
+    if (!res.ok) throw new Error('nav fetch failed');
     const html = await res.text();
-    slot.innerHTML = html;
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const nav = doc.querySelector('nav.nav');
+    slot.innerHTML = nav ? nav.outerHTML : html;
     resolveNavLinks();
     highlightNav();
     setupSidebarToggles();
-  } catch (_) {}
+    if (sidebar) sidebar.classList.remove('nav-fallback');
+    if (frame) frame.style.display = 'none';
+  } catch (_) {
+    if (sidebar) sidebar.classList.add('nav-fallback');
+    if (frame) {
+      frame.style.display = 'block';
+      frame.src = base + 'navi.html';
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   buildToc();
   loadNav();
   transformLinkListsToCards();
-  addSidebarFooter();
 });

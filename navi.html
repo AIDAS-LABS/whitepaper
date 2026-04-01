@@ -1,1 +1,117 @@
-<div class="nav-container"></div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Navigation</title>
+  <link rel="stylesheet" href="asset/style.css" />
+  <style>
+    body { margin: 0; background: transparent; }
+    .nav-wrapper { padding: 8px; }
+  </style>
+</head>
+<body>
+  <div class="nav-wrapper">
+    <nav class="nav">
+      <div class="nav-section" data-section="overview">
+        <a class="nav-section-link" href="overview.html" target="_top">Overview</a>
+        <span class="nav-section-caret">▾</span>
+      </div>
+      <ul class="nav-list">
+        <li><a href="sub/overview/introduction.html" target="_top">Introduction</a></li>
+        <li><a href="sub/overview/our-vision.html" target="_top">Our Vision</a></li>
+      </ul>
+
+      <div class="nav-section" data-section="platform">
+        <a class="nav-section-link" href="platform.html" target="_top">Platform</a>
+        <span class="nav-section-caret">▾</span>
+      </div>
+      <ul class="nav-list">
+        <li><a href="sub/platform/aidas-wallet.html" target="_top">AIDAS Wallet</a></li>
+        <li><a href="sub/platform/app.html" target="_top">APP</a></li>
+        <li><a href="sub/platform/reward-system.html" target="_top">Reward System</a></li>
+        <li><a href="sub/platform/tier-system.html" target="_top">Tier System</a></li>
+      </ul>
+
+      <div class="nav-section" data-section="tokenomics">
+        <a class="nav-section-link" href="tokenomics.html" target="_top">Tokenomics</a>
+        <span class="nav-section-caret">▾</span>
+      </div>
+      <ul class="nav-list">
+        <li><a href="sub/tokenomics/ads-token.html" target="_top">ADS Token</a></li>
+        <li><a href="sub/tokenomics/token-definition.html" target="_top">Token Definition</a></li>
+      </ul>
+
+      <div class="nav-section" data-section="token-metrics">
+        <a class="nav-section-link" href="token-metrics.html" target="_top">Token Metrics</a>
+        <span class="nav-section-caret">▾</span>
+      </div>
+      <ul class="nav-list">
+        <li><a href="sub/token-metrics/private-sale.html" target="_top">Private Sale</a></li>
+        <li><a href="sub/token-metrics/liquidity.html" target="_top">Liquidity</a></li>
+        <li><a href="sub/token-metrics/founding-team.html" target="_top">Founding Team</a></li>
+        <li><a href="sub/token-metrics/advisor-contributor.html" target="_top">Advisor Contributor</a></li>
+        <li><a href="sub/token-metrics/ecosystem-reserve.html" target="_top">Ecosystem Reserve</a></li>
+        <li><a href="sub/token-metrics/community-reward.html" target="_top">Community Reward</a></li>
+      </ul>
+
+      <div class="nav-section" data-section="other">
+        <a class="nav-section-link" href="ecosystem.html" target="_top">Ecosystem</a>
+      </div>
+      <ul class="nav-list collapsed"></ul>
+      <div class="nav-section" data-section="other-2">
+        <a class="nav-section-link" href="roadmap.html" target="_top">Roadmap</a>
+      </div>
+      <ul class="nav-list collapsed"></ul>
+      <div class="nav-section" data-section="other-3">
+        <a class="nav-section-link" href="disclaimer.html" target="_top">Disclaimer</a>
+      </div>
+      <ul class="nav-list collapsed"></ul>
+      <div class="nav-section" data-section="other-4">
+        <a class="nav-section-link" href="page.html" target="_top">Page</a>
+      </div>
+      <ul class="nav-list collapsed"></ul>
+    </nav>
+  </div>
+  <script>
+    function setupNav() {
+      const sections = document.querySelectorAll('.nav-section');
+      sections.forEach((section) => {
+        const next = section.nextElementSibling;
+        if (!next || !next.classList.contains('nav-list')) return;
+        const caret = section.querySelector('.nav-section-caret');
+        if (caret) {
+          caret.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const willCollapse = !section.classList.contains('collapsed');
+            section.classList.toggle('collapsed');
+            next.classList.toggle('collapsed');
+            if (willCollapse) {
+              next.style.maxHeight = '0px';
+            } else {
+              next.style.maxHeight = next.scrollHeight + 'px';
+            }
+          });
+        }
+        if (!next.classList.contains('collapsed')) {
+          next.style.maxHeight = next.scrollHeight + 'px';
+        } else {
+          next.style.maxHeight = '0px';
+        }
+      });
+
+      const current = window.top.location.pathname.split('/').pop();
+      const links = document.querySelectorAll('.nav a');
+      links.forEach((a) => {
+        const href = a.getAttribute('href');
+        if (!href) return;
+        const hrefFile = href.split('/').pop();
+        if (hrefFile === current) a.classList.add('active');
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', setupNav);
+  </script>
+</body>
+</html>
