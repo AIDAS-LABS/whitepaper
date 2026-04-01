@@ -56,7 +56,67 @@ function highlightNav() {
   });
 }
 
+function setupSidebarToggles() {
+  const sections = document.querySelectorAll('.nav-section');
+  sections.forEach((section) => {
+    const next = section.nextElementSibling;
+    if (!next || !next.classList.contains('nav-list')) return;
+    section.addEventListener('click', () => {
+      section.classList.toggle('collapsed');
+      next.classList.toggle('collapsed');
+    });
+  });
+
+  // Expand section that contains active link
+  const active = document.querySelector('.nav a.active');
+  if (active) {
+    const list = active.closest('.nav-list');
+    if (list) {
+      const section = list.previousElementSibling;
+      if (section && section.classList.contains('nav-section')) {
+        section.classList.remove('collapsed');
+        list.classList.remove('collapsed');
+      }
+    }
+  }
+}
+
+function transformLinkListsToCards() {
+  const content = document.querySelector('.doc-content');
+  if (!content) return;
+  const h1 = content.querySelector('h1');
+  if (!h1) return;
+  const next = h1.nextElementSibling;
+  if (!next || next.tagName !== 'UL') return;
+
+  const items = Array.from(next.querySelectorAll('li'));
+  if (items.length === 0) return;
+  const allLinks = items.every((li) => li.querySelector('a') && li.textContent.trim() === li.querySelector('a').textContent.trim());
+  if (!allLinks) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'cards';
+  items.forEach((li) => {
+    const a = li.querySelector('a');
+    const card = document.createElement('a');
+    card.className = 'card';
+    card.href = a.getAttribute('href') || '#';
+    const title = document.createElement('div');
+    title.className = 'card-title';
+    title.textContent = a.textContent || '';
+    card.appendChild(title);
+    const sub = document.createElement('div');
+    sub.className = 'card-sub';
+    sub.textContent = 'Open section';
+    card.appendChild(sub);
+    wrapper.appendChild(card);
+  });
+  next.replaceWith(wrapper);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   buildToc();
   highlightNav();
+  setupSidebarToggles();
+  transformLinkListsToCards();
 });
